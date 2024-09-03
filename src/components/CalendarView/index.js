@@ -1,33 +1,45 @@
+// src/components/CalendarView.js
 import React, { Component } from 'react';
 import Calendar from 'react-calendar';
 import { Link } from 'react-router-dom';
+import './index.css'
 
 class CalendarView extends Component {
   state = {
     date: new Date(),
-    events: [
-      { id: 1, title: 'Meeting', date: '2024-09-03', description: 'Discuss project' },
-      { id: 2, title: 'Birthday Party', date: '2024-09-05', description: 'Celebrate birthday' },
-    ]
   };
 
-  onDateChange = date => this.setState({ date });
+  onDateChange = (date) => {
+    this.setState({ date });
+  };
+
+
+  formatDateLocal = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
   render() {
-    const { date, events } = this.state;
-    const selectedDate = date.toISOString().split('T')[0];
+    const { date } = this.state;
+    const { events } = this.props;
 
-    const eventsOnSelectedDate = events.filter(event => event.date === selectedDate);
+    const selectedDate = this.formatDateLocal(date);
+
+    const eventsOnSelectedDate = events.filter(
+      (event) => event.date === selectedDate
+    );
 
     return (
-      <div>
+      <div className='container'>
         <h2>Calendar</h2>
-        <Calendar onChange={this.onDateChange} value={this.state.date} />
+        <Calendar onChange={this.onDateChange} value={date} />
         <div>
           <h3>Events on {selectedDate}:</h3>
           {eventsOnSelectedDate.length > 0 ? (
             <ul>
-              {eventsOnSelectedDate.map(event => (
+              {eventsOnSelectedDate.map((event) => (
                 <li key={event.id}>
                   <Link to={`/event/${event.id}`}>{event.title}</Link>
                 </li>

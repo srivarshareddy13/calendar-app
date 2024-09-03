@@ -1,35 +1,33 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+import './index.css'; 
 
-class EventDetails extends Component {
-  state = {
-    event: null,
+const EventDetails = ({ events, updateEvent }) => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const event = events.find(e => e.id.toString() === id);
+
+  if (!event) {
+    return <p>Event not found</p>;
+  }
+
+  const handleEdit = () => {
+    
+    navigate(`/event/edit/${event.id}`, { state: { event } });
   };
 
-  componentDidMount() {
-    const eventId = this.props.match.params.id;
-    const events = [
-      { id: 1, title: 'Meeting', date: '2024-09-03', description: 'Discuss project' },
-      { id: 2, title: 'Birthday Party', date: '2024-09-05', description: 'Celebrate birthday' },
-    ];
-
-    const event = events.find(e => e.id.toString() === eventId);
-    this.setState({ event });
-  }
-
-  render() {
-    const { event } = this.state;
-    if (!event) {
-      return <p>Event not found</p>;
-    }
-
-    return (
-      <div>
-        <h2>{event.title}</h2>
-        <p><strong>Date:</strong> {event.date}</p>
-        <p><strong>Description:</strong> {event.description}</p>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="container">
+      <h2>{event.title}</h2>
+      <p><strong>Date:</strong> {event.date}</p>
+      <p><strong>Description:</strong> {event.description}</p>
+      <button onClick={handleEdit}>Edit Event</button>
+      <Link to="/">
+        <button>Go Back</button>
+      </Link>
+    </div>
+  );
+};
 
 export default EventDetails;
+
